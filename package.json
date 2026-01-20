@@ -17,5 +17,22 @@
   "bugs": {
     "url": "https://github.com/Ad15C/russell_marina/issues"
   },
-  "homepage": "https://github.com/Ad15C/russell_marina#readme"
+  "homepage": "https://github.com/Ad15C/russell_marina#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-session": "^2.1.1",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "flame": "^0.4.3",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.5",
+    "nodemon": "^3.1.11",
+    "server.js": "^1.0.0"
+  },
+  "devDependencies": {
+    "clinic": "^13.0.0",
+    "env-cmd": "^11.0.0",
+    "jest": "^30.2.0",
+    "supertest": "^7.2.2"
+  }
 }
