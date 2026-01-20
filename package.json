@@ -1,0 +1,21 @@
+{
+  "name": "russell-marina",
+  "version": "1.0.0",
+  "description": "\"# russell_marina\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ad15C/russell_marina.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ad15C/russell_marina/issues"
+  },
+  "homepage": "https://github.com/Ad15C/russell_marina#readme"
+}
