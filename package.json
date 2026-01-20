@@ -1,11 +1,12 @@
 {
   "name": "russell-marina",
   "version": "1.0.0",
-  "description": "\"# russell_marina\"",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "API REST pour gérer les réservations du Port de Plaisance Russell",
+  "main": "server.js",
+"scripts": {
+  "dev": "env-cmd -f ./env/.env.dev nodemon server.js",
+  "start": "env-cmd -f ./env/.env.prod node server.js"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ad15C/russell_marina.git"
@@ -22,17 +23,16 @@
     "bcryptjs": "^3.0.3",
     "cookie-session": "^2.1.1",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "flame": "^0.4.3",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.1.5",
-    "nodemon": "^3.1.11",
-    "server.js": "^1.0.0"
+    "mongoose": "^9.1.5"
   },
   "devDependencies": {
     "clinic": "^13.0.0",
     "env-cmd": "^11.0.0",
     "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
     "supertest": "^7.2.2"
   }
 }
