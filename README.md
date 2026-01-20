@@ -1,13 +1,82 @@
-Bienvenue sur le projet du Port de Plaisance Russell
+# Port de Plaisance Russell
 
-Cette application permettra de gérer les réservations d'emplacements pour amarrer un bateau (catway).
+Bienvenue sur le projet du **Port de Plaisance Russell**.
 
-Mise ne place d'une API REST (Privée)
-L'utilisateur sera caractérisé par un nom, un mail et mot de passe.
-Les catways auront bien évidemment un numéro de pont, untype, une description .
-Les réservations auront un numéro de catway, le nom du client, le nom du bateau, ainsi qu'une date de début/fin de réservation.
+Cette application a pour objectif de gérer les réservations d'emplacements pour amarrer des bateaux (catways) au sein d'un port de plaisance.
 
-Pour le bon fonctionnement de ce projet, il vous sera demandé de mettre en place les dépendances suivantes: 
-express, mongoose, nodemon, cors, bcryptjs, jsonwebtoken, cookie-session, clinic, clinic flame, autocannon, jests, supertest, env-cmd
+---
 
-Pour toutes questions, merci de contacter Adeline à l'adresse suivante: ad15canon@gmail.com
+## Objectif du projet
+
+Mise en place d'une **API REST privée** permettant :
+
+- La gestion des utilisateurs (authentification)
+- La gestion des catways
+- La gestion des réservations de catways
+
+---
+
+##  Utilisateurs
+
+Un utilisateur est caractérisé par :
+- un nom
+- une adresse e-mail
+- un mot de passe (hashé)
+
+---
+
+##  Catways
+
+Les catways possèdent :
+- un numéro de pont
+- un type
+- une description
+
+---
+
+##  Réservations
+
+Une réservation contient :
+- le numéro du catway
+- le nom du client
+- le nom du bateau
+- une date de début
+- une date de fin
+
+---
+
+##  Technologies et dépendances
+
+Le projet utilise les technologies suivantes :
+
+### Dépendances principales
+- express
+- mongoose
+- cors
+- bcryptjs
+- jsonwebtoken
+- cookie-session
+
+### Dépendances de développement
+- nodemon
+- clinic
+- clinic flame
+- autocannon
+- jest
+- supertest
+- env-cmd
+
+---
+
+##  Lancer le projet
+
+1. Installer les dépendances :
+```bash
+npm install
+
+Contact
+
+Pour toute question concernant ce projet, merci de contacter :
+
+Adeline
+📧 ad15canon@gmail.com
