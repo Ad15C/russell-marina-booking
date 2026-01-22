@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Port de Plaisance de Russell</title>
+</head>
+<body>
+  <h1>Bienvenue sur le Port de Plaisance de Russell</h1>
+  <p>Gérez vos catways et réservations facilement depuis votre compte.</p>
+
+  <form action="/api/auth/login" method="POST">
+  <input type="email" name="email" placeholder="Email" required />
+  <input type="password" name="password" placeholder="Mot de passe" required />
+  <button type="submit">Se connecter</button>
+</form>
+
+<% if (typeof error !== 'undefined' && error) { %>
+  <p style="color:red"><%= error %></p>
+<% } %>
+
+
+  <p>Pas encore de compte ? <a href="/register">Créer un compte</a></p>
+  <p><a href="/docs">Documentation API</a></p>
+</body>
+</html>
