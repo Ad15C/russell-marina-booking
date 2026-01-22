@@ -14,10 +14,9 @@
   <button type="submit">Se connecter</button>
 </form>
 
-<% if (typeof error !== 'undefined' && error) { %>
+<% if (error) { %>
   <p style="color:red"><%= error %></p>
 <% } %>
-
 
   <p>Pas encore de compte ? <a href="/register">Créer un compte</a></p>
   <p><a href="/docs">Documentation API</a></p>

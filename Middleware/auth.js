@@ -2,11 +2,9 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
   /*récupère le token dans le cookie de session */
-  const token = req.session?.token; 
-
-  if (!token) {
-    return res.redirect('/');
-  }
+  const token = req.session?.token;
+  console.log('Pas de token en session');
+  if (!token) return res.redirect('/');
 
   try {
     /* Vérifie que le JWT est correct */
@@ -19,6 +17,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     /* Token invalide ou expiré */
     req.session = null; /* supprime le cookie */
+    console.log(' Token invalide ou expiré');
     res.redirect('/');
   }
 };
