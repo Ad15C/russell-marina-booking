@@ -3,12 +3,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieSession = require('cookie-session');
 const path = require('path');
+const methodOverride = require('method-override');
+
 
 const authRoutes = require('./routes/auth');
-const protect = require('./middleware/auth');
 const authController = require('./controllers/authController');
-const methodOverride = require('method-override');
 const userRoutes = require('./routes/users');
+const catwaysRoutes = require('./routes/catways'); 
+
+const protect = require('./middleware/auth');
+
 
 const app = express();
 
@@ -40,9 +44,10 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 /* Connexion MongoDB */
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/catway_db')
   .then(() => console.log('MongoDB connecté'))
   .catch(err => console.error(err));
+
 
 
 /* Routes */
