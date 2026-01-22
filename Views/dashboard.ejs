@@ -7,7 +7,10 @@
 <body>
   <h1>Bienvenue <%= user.name %> sur le Port de Plaisance de Russell</h1>
   
-  <a href="/api/auth/logout">Se déconnecter</a>
+  <form action="/api/auth/logout" method="POST">
+  <button type="submit">Se déconnecter</button>
+</form>
+
 
   <hr>
   <h2>Gestion des utilisateurs</h2>

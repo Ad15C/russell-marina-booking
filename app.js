@@ -22,6 +22,8 @@ app.use(cookieSession({
   maxAge: 60 * 60 * 1000
 }));
 
+console.log('SESSION_SECRET:', process.env.SESSION_SECRET);
+
 /* Config moteur de template EJS */
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
