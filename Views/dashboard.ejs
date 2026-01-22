@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tableau de bord - Port de Plaisance</title>
+</head>
+<body>
+  <h1>Bienvenue <%= user.name %> sur le Port de Plaisance de Russell</h1>
+  
+  <a href="/api/auth/logout">Se déconnecter</a>
+
+  <hr>
+  <h2>Gestion des utilisateurs</h2>
+
+  <!-- Créer utilisateur -->
+  <form action="/api/users" method="POST">
+    <input type="text" name="name" placeholder="Nom" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Mot de passe" required />
+    <button type="submit">Créer utilisateur</button>
+  </form>
+
+  <!-- Modifier utilisateur -->
+  <form action="/api/users" method="POST">
+    <input type="hidden" name="_method" value="PUT" />
+    <input type="text" name="id" placeholder="ID utilisateur" required />
+    <input type="text" name="name" placeholder="Nouveau nom" />
+    <input type="email" name="email" placeholder="Nouvel email" />
+    <input type="password" name="password" placeholder="Nouveau mot de passe" />
+    <button type="submit">Modifier utilisateur</button>
+  </form>
+
+  <!-- Supprimer utilisateur -->
+  <form action="/api/users" method="POST">
+    <input type="hidden" name="_method" value="DELETE" />
+    <input type="text" name="id" placeholder="ID utilisateur" required />
+    <button type="submit">Supprimer utilisateur</button>
+  </form>
+
+  <hr>
+  <h2>Gestion des Catways</h2>
+
+  <!-- Créer catway -->
+  <form action="/api/catways" method="POST">
+    <input type="text" name="catwayNumber" placeholder="Numéro du catway" required />
+    <select name="type" required>
+      <option value="long">Long</option>
+      <option value="short">Short</option>
+    </select>
+    <input type="text" name="catwayState" placeholder="État du catway" required />
+    <button type="submit">Créer Catway</button>
+  </form>
+
+  <!-- Modifier catway -->
+  <form action="/api/catways" method="POST">
+    <input type="hidden" name="_method" value="PUT" />
+    <input type="text" name="id" placeholder="ID catway" required />
+    <input type="text" name="catwayState" placeholder="Nouvel état du catway" required />
+    <button type="submit">Modifier Catway</button>
+  </form>
+
+  <!-- Supprimer catway -->
+  <form action="/api/catways" method="POST">
+    <input type="hidden" name="_method" value="DELETE" />
+    <input type="text" name="id" placeholder="ID catway" required />
+    <button type="submit">Supprimer Catway</button>
+  </form>
+
+  <hr>
+  <h2>Réservations</h2>
+
+  <!-- Créer réservation -->
+  <form action="/api/catways/:id/reservations" method="POST">
+    <input type="text" name="catwayNumber" placeholder="Numéro du catway" required />
+    <input type="text" name="clientName" placeholder="Nom du client" required />
+    <input type="text" name="boatName" placeholder="Nom du bateau" required />
+    <input type="date" name="checkIn" placeholder="Date de début" required />
+    <input type="date" name="checkOut" placeholder="Date de fin" required />
+    <button type="submit">Créer réservation</button>
+  </form>
+
+  <!-- Supprimer réservation -->
+  <form action="/api/catways/:id/reservations" method="POST">
+    <input type="hidden" name="_method" value="DELETE" />
+    <input type="text" name="catwayNumber" placeholder="Numéro du catway" required />
+    <input type="text" name="reservationId" placeholder="ID réservation" required />
+    <button type="submit">Supprimer réservation</button>
+  </form>
+
+  <hr>
+  <h2>Listes</h2>
+  <a href="/catways">Liste des Catways</a> |
+  <a href="/reservations">Liste des Réservations</a>
+</body>
+</html>

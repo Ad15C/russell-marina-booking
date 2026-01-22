@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "API REST pour gérer les réservations du Port de Plaisance Russell",
   "main": "server.js",
-"scripts": {
-  "dev": "env-cmd -f ./env/.env.dev nodemon server.js",
-  "start": "env-cmd -f ./env/.env.prod node server.js"
-},
+  "scripts": {
+    "dev": "env-cmd -f ./env/.env.dev nodemon server.js",
+    "start": "env-cmd -f ./env/.env.prod node server.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ad15C/russell_marina.git"
@@ -24,6 +24,7 @@
     "cookie-session": "^2.1.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "ejs": "^4.0.1",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.5"
