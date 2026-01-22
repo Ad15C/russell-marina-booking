@@ -7,15 +7,26 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const protect = require('./middleware/auth');
 const authController = require('./controllers/authController');
-
+const methodOverride = require('method-override');
+const userRoutes = require('./routes/users');
 
 const app = express();
 
 /* Middleware globaux */
 app.use(cors());
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
+app.use(methodOverride((req, res) => {
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    const method = req.body._method;
+    delete req.body._method; // supprime le champ pour éviter conflit
+    return method;
+  }
+}));
+
+
+/* Configuration des sessions avec cookies */
 app.use(cookieSession({
   name: 'session',
   keys: [process.env.SESSION_SECRET],
@@ -24,7 +35,7 @@ app.use(cookieSession({
 
 console.log('SESSION_SECRET:', process.env.SESSION_SECRET);
 
-/* Config moteur de template EJS */
+/* Configuration moteur de template EJS */
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -43,11 +54,21 @@ app.get('/register', (req, res) => res.render('register', { error: null }));
 /* Routes API Auth */
 app.use('/api/auth', authRoutes);
 
+
 /* Routes privées */
+
 /* Dashboard protégé */
 app.get('/dashboard', protect, (req, res) => {
-  res.render('dashboard', { user: req.session.user });
+  res.render('dashboard', {
+    user: req.session.user,
+    message: req.query.message,
+    error: req.query.error
+  });
 });
+
+
+/* Routes API Utilisateurs */
+app.use('/api/users', userRoutes);
 
 /* Export App*/
 module.exports = app;

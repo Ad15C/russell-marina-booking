@@ -12,10 +12,9 @@ exports.register = async (req, res) => {
 
     /* Connecte automatiquement l'utilisateur après inscription */
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    req.session.token = token;
+    req.session.token = token;      
     req.session.user = { id: user._id, name: user.name, email: user.email };
-
+    console.log('Session après login:', req.session);
     /* Redirige vers le dashboard */
     res.redirect('/dashboard');
   } catch (err) {
@@ -35,6 +34,7 @@ exports.login = async (req, res) => {
     req.session.token = token;
     req.session.user = { id: user._id, name: user.name, email: user.email };
 
+    console.log('Session après login :', req.session);
     /* Redirige vers le dashboard */
     res.redirect('/dashboard');
   } catch (err) {
