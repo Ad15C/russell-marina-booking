@@ -11,45 +11,83 @@
   <button type="submit">Se déconnecter</button>
 </form>
 
+<hr>
 
-  <hr>
   <h2>Gestion des utilisateurs</h2>
 
-  <!-- Modifier utilisateur -->
-<form action="/api/users" method="POST">
-  <input type="hidden" name="_method" value="PUT" />
-  <input type="text" name="name" placeholder="Nom existant" required />
-  <input type="email" name="email" placeholder="Email existant" />
-  <input type="text" name="newName" placeholder="Nouveau nom" />
-  <input type="email" name="newEmail" placeholder="Nouvel email" />
-  <input type="password" name="newPassword" placeholder="Nouveau mot de passe" />
-  <button type="submit">Modifier utilisateur</button>
-</form>
+  <h3>Créer un nouvel utilisateur</h3>
+  <form action="/api/users" method="POST">
+    <input type="text" name="name" placeholder="Nom" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Mot de passe" required />
+    <button type="submit">Créer Utilisateur</button>
+  </form>
+  
+  <h3>Modifier un utilisateur</h3>
 
-  <!-- Supprimer utilisateur -->
-<form action="/api/users" method="POST">
-  <input type="hidden" name="_method" value="DELETE" />
-  <input type="text" name="name" placeholder="Nom utilisateur" />
-  <input type="email" name="email" placeholder="Email utilisateur" />
-  <button type="submit">Supprimer utilisateur</button>
-</form>
+  <form action="/api/users" method="POST">
+    <input type="hidden" name="_method" value="PUT" />
+    <input type="text" name="name" placeholder="Nom existant" required />
+    <input type="email" name="email" placeholder="Email existant" />
+    <input type="text" name="newName" placeholder="Nouveau nom" />
+    <input type="email" name="newEmail" placeholder="Nouvel email" />
+    <input type="password" name="newPassword" placeholder="Nouveau mot de passe" />
+    <button type="submit">Modifier utilisateur</button>
+  </form>
 
-<!-- Message de succès ou erreur -->
-<% if (message) { %>
-  <p style="color:green"><%= message %></p>
+  <h3>Supprimer un utilisateur</h3>
+  <form action="/api/users" method="POST">
+    <input type="hidden" name="_method" value="DELETE" />
+    <input type="text" name="name" placeholder="Nom utilisateur" />
+    <input type="email" name="email" placeholder="Email utilisateur" />
+    <button type="submit">Supprimer utilisateur</button>
+  </form>
+
+  <!-- Message de succès ou erreur -->
+  <% if (message) { %>
+    <p style="color:green"><%= message %></p>
+  <% } %>
+
+  <% if (error) { %>
+    <p style="color:red"><%= error %></p>
+  <% } %>
+
+
+
+  <h2>Liste des Catways</h2>
+  <!-- Affichage de tous les catways -->
+  <table border="1">
+    <tr>
+      <th>ID</th>
+      <th>Numéro</th>
+      <th>Type</th>
+      <th>État</th>
+      <th>Détails</th>
+    </tr>
+    <% if (catways && catways.length > 0) { %>
+  <% catways.forEach(catway => { %>
+    <tr>
+      <td><%= catway._id %></td>
+      <td><%= catway.catwayNumber %></td>
+      <td><%= catway.type %></td>
+      <td><%= catway.catwayState %></td>
+      <td><a href="/catways/<%= catway._id %>">Voir détail</a></td>
+    </tr>
+  <% }) %>
+<% } else { %>
+  <tr>
+    <td colspan="5">Aucun catway disponible</td>
+  </tr>
 <% } %>
+  </table>
 
-<% if (error) { %>
-  <p style="color:red"><%= error %></p>
-<% } %>
 
-  <hr>
-  <h2>Gestion des Catways</h2>
+<hr/>
 
-  <!-- Créer catway -->
-  <form action="/api/catways" method="POST">
+  <h2>Créer un nouveau catway</h2>
+  <form action="/catways" method="POST">
     <input type="text" name="catwayNumber" placeholder="Numéro du catway" required />
-    <select name="type" required>
+      <select name="type" required>
       <option value="long">Long</option>
       <option value="short">Short</option>
     </select>
@@ -57,22 +95,33 @@
     <button type="submit">Créer Catway</button>
   </form>
 
-  <!-- Modifier catway -->
+<hr/>
+
+  <h2>Modifier un catway</h2>
   <form action="/api/catways" method="POST">
     <input type="hidden" name="_method" value="PUT" />
-    <input type="text" name="id" placeholder="ID catway" required />
-    <input type="text" name="catwayState" placeholder="Nouvel état du catway" required />
+    <input type="text" name="id" placeholder="ID du catway à modifier" required />
+    <input type="text" name="catwayNumber" placeholder="Numéro" />
+    <select name="type">
+      <option value="">--Type--</option>
+      <option value="long">Long</option>
+      <option value="short">Short</option>
+    </select>
+    <input type="text" name="catwayState" placeholder="État" />
     <button type="submit">Modifier Catway</button>
   </form>
 
-  <!-- Supprimer catway -->
+<hr/>
+
+  <h2>Supprimer un catway</h2>
   <form action="/api/catways" method="POST">
     <input type="hidden" name="_method" value="DELETE" />
-    <input type="text" name="id" placeholder="ID catway" required />
+    <input type="text" name="id" placeholder="ID du catway à supprimer" required />
     <button type="submit">Supprimer Catway</button>
   </form>
 
   <hr>
+
   <h2>Réservations</h2>
 
   <!-- Créer réservation -->
