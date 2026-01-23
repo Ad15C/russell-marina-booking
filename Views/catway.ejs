@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Détail du Catway</title>
+</head>
+<body>
+  <h1>Bienvenue <%= user.name %> sur le Port de Plaisance</h1>
+
+  <h2>Détail du Catway sélectionné</h2>
+  <p><strong>ID :</strong> <%= catway._id %></p>
+  <p><strong>Numéro :</strong> <%= catway.catwayNumber %></p>
+  <p><strong>Type :</strong> <%= catway.type %></p>
+  <p><strong>État :</strong> <%= catway.catwayState %></p>
+
+  <h2>Modifier ce Catway</h2>
+  <form action="/catways/<%= catway._id %>?_method=PUT" method="POST">
+    <input type="text" name="catwayNumber" value="<%= catway.catwayNumber %>" required />
+    <select name="type" required>
+      <option value="long" <%= catway.type === 'long' ? 'selected' : '' %>>Long</option>
+      <option value="short" <%= catway.type === 'short' ? 'selected' : '' %>>Short</option>
+    </select>
+    <input type="text" name="catwayState" value="<%= catway.catwayState %>" required />
+    <button type="submit">Modifier</button>
+  </form>
+
+  <h2>Supprimer ce Catway</h2>
+  <form action="/catways/<%= catway._id %>?_method=DELETE" method="POST">
+    <button type="submit">Supprimer</button>
+  </form>
+
+  <p>
+    <a href="/catways">← Retour à la liste</a> |
+    <a href="/dashboard">← Dashboard</a>
+  </p>
+</body>
+</html>
