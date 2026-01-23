@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Catway = require('../models/catway');
 
 /* Récupérer tous les catways */

@@ -90,13 +90,14 @@ app.use('/api/users',protect, userRoutes);
 /* Routes API Catways protégées (REST JSON) */
 app.use('/api/catways', protect, catwaysRoutes);
 
-/* Routes EJS pour afficher les pages côté serveur */
-/* Liste de tous les catways (vue) */
+/* Liste de tous les catways */
 app.get('/catways', protect, async (req, res) => {
   const catways = await catwayService.getAllCatways();
-  res.render('catways', { 
-    user: req.session.user, 
-    catways 
+  res.render('catways', {
+    user: req.session.user,
+    catways,
+    message: req.query.message || null,
+    error: req.query.error || null
   });
 });
 
@@ -105,9 +106,73 @@ app.get('/catways/:id', protect, async (req, res) => {
   try {
     const catway = await catwayService.getCatwayById(req.params.id);
     if (!catway) return res.status(404).send('Catway introuvable');
-    res.render('catway', { catway, user: req.session.user });
-  } catch (err) {
+    res.render('catway', {
+      catway,
+      user: req.session.user,
+      message: req.query.message || null,
+      error: req.query.error || null
+    });
+  } catch {
     res.status(400).send('ID invalide');
+  }
+});
+
+/* Créer un catway */
+app.post('/catways', protect, async (req, res) => {
+  try {
+    await catwayService.createCatway(req.body);
+    res.redirect('/catways?message=Catway créé');
+  } catch (err) {
+    res.redirect('/catways?error=' + encodeURIComponent(err.message));
+  }
+});
+
+/* Modifier un catway */
+app.put('/catways/:id', protect, async (req, res) => {
+  try {
+    const updateData = {};
+    if (req.body.type) updateData.type = req.body.type;
+    if (req.body.catwayState) updateData.catwayState = req.body.catwayState;
+    await catwayService.updateCatway(req.params.id, updateData);
+    res.redirect('/catways?message=Catway modifié');
+  } catch (err) {
+    res.redirect('/catways?error=' + encodeURIComponent(err.message));
+  }
+});
+
+/* Supprimer un catway */
+app.delete('/catways/:id', protect, async (req, res) => {
+  try {
+    await catwayService.deleteCatway(req.params.id);
+    res.redirect('/catways?message=Catway supprimé');
+  } catch (err) {
+    res.redirect('/catways?error=' + encodeURIComponent(err.message));
+  }
+});
+
+/* Modifier un catway depuis formulaire par ID */
+app.post('/catways/updateById', protect, async (req, res) => {
+  try {
+    const { id, type, catwayState } = req.body;
+    const updateData = {};
+    if (type) updateData.type = type;
+    if (catwayState) updateData.catwayState = catwayState;
+
+    await catwayService.updateCatway(id, updateData);
+    res.redirect('/dashboard?message=Catway modifié');
+  } catch (err) {
+    res.redirect('/dashboard?error=' + encodeURIComponent(err.message));
+  }
+});
+
+/* Supprimer un catway depuis formulaire par ID */
+app.post('/catways/deleteById', protect, async (req, res) => {
+  try {
+    const { id } = req.body;
+    await catwayService.deleteCatway(id);
+    res.redirect('/dashboard?message=Catway supprimé');
+  } catch (err) {
+    res.redirect('/dashboard?error=' + encodeURIComponent(err.message));
   }
 });
 
