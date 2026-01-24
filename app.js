@@ -11,6 +11,8 @@ const authController = require('./controllers/authController');
 const userRoutes = require('./routes/users');
 const catwaysRoutes = require('./routes/catways'); 
 const catwayService = require('./services/catwayService');
+const reservationsRoutes = require('./routes/reservations');
+const reservationService = require('./services/reservationService');
 
 const protect = require('./middleware/auth');
 
@@ -175,6 +177,44 @@ app.post('/catways/deleteById', protect, async (req, res) => {
     res.redirect('/dashboard?error=' + encodeURIComponent(err.message));
   }
 });
+
+/* Réservation Routes */
+/* Routes pour les réservations */
+app.use('/api/reservations', protect, reservationsRoutes);
+
+/*Détail d’une réservation */
+app.get('/catways/:id/reservations/:reservationId', protect, async (req, res) => {
+  const reservation = await Reservation.findById(req.params.reservationId);
+
+  res.render('reservation', {
+    reservation,
+    user: req.user
+  });
+});
+
+/*Créer une réservation pour un catway */
+app.post('/catways/:id/reservations', protect, async (req, res) => {
+  const catway = await Catway.findById(req.params.id);
+
+  await Reservation.create({
+    catwayId: catway._id,
+    catwayNumber: catway.catwayNumber,
+    clientName: req.body.clientName,
+    boatName: req.body.boatName,
+    checkIn: req.body.checkIn,
+    checkOut: req.body.checkOut
+  });
+
+  res.redirect(`/catways/${req.params.id}/reservations`);
+});
+
+/* Supprimer une réservation */
+app.delete('/catways/:id/reservations/:reservationId', protect, async (req, res) => {
+  await Reservation.findByIdAndDelete(req.params.reservationId);
+
+  res.redirect(`/catways/${req.params.id}/reservations`);
+});
+
 
 /* Page 404 si aucune route ne correspond */
 app.use((req, res) => {
