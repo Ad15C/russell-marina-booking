@@ -3,15 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <title>Liste des Catways</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    form { display: inline-block; margin: 0; }
+    input, select, button { margin: 2px; padding: 4px; }
+    .message { color: green; }
+    .error { color: red; }
+  </style>
 </head>
 <body>
   <h1>Bienvenue <%= user.name %> sur le Port de Plaisance</h1>
 
   <% if (message) { %>
-    <p style="color:green"><%= message %></p>
+    <p class="message"><%= message %></p>
   <% } %>
   <% if (error) { %>
-    <p style="color:red"><%= error %></p>
+    <p class="error"><%= error %></p>
   <% } %>
 
   <h2>Liste des Catways</h2>
@@ -24,7 +34,7 @@
       <th>Actions</th>
     </tr>
 
-<% catways.forEach(catway => { %>
+    <% catways.forEach(catway => { %>
     <tr>
         <td><%= catway._id %></td>
         <td><%= catway.catwayNumber %></td>
@@ -33,42 +43,41 @@
         <td>
     <!--Voir la liste des catways-->
     <a href="/catways/<%= catway._id %>">Voir</a>
+
     <!-- Modifier un catway -->
-    <form action="/catways/<%= catway._id %>" method="POST" style="display:inline;">
-        <input type="hidden" name="_method" value="PUT" />
-        <select name="type">
+        <form action="/catways/<%= catway._id %>" method="POST">
+          <input type="hidden" name="_method" value="PUT">
+          <select name="type">
             <option value="">--Type--</option>
             <option value="long" <%= catway.type === 'long' ? 'selected' : '' %>>Long</option>
             <option value="short" <%= catway.type === 'short' ? 'selected' : '' %>>Short</option>
-        </select>
-        <input type="text" name="catwayState" value="<%= catway.catwayState %>"/>
-        <button type="submit">Modifier</button>
-    </form>
+          </select>
+          <input type="text" name="catwayState" value="<%= catway.catwayState %>">
+          <button type="submit">Modifier</button>
+        </form>
 
-    <!-- Supprimer -->
-    <form action="/catways/<%= catway._id %>" method="POST" style="display:inline;">
-        <input type="hidden" name="_method" value="DELETE" />
-        <button type="submit">Supprimer</button>
-    </form>
-    <!--Réserver un catway-->
-    <a href="/catways/<%= catway._id %>/reserve">Réserver</a>
-</td>
-</tr>
-<% }) %>
-</table>
-
-  <hr/>
+        <!-- Supprimer un catway -->
+        <form action="/catways/<%= catway._id %>" method="POST">
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit">Supprimer</button>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
+  </table>
 
   <h2>Créer un nouveau Catway</h2>
-    <form action="/catways" method="POST">
-        <input type="text" name="catwayNumber" placeholder="Numéro" required />
-        <select name="type" required>
-            <option value="long">Long</option>
-            <option value="short">Short</option>
-        </select>
-        <input type="text" name="catwayState" placeholder="État" required />
-        <button type="submit">Créer</button>
-    </form>
+  <form action="/catways" method="POST">
+    <input type="text" name="catwayNumber" placeholder="Numéro" required>
+    <select name="type" required>
+      <option value="long">Long</option>
+      <option value="short">Short</option>
+    </select>
+    <input type="text" name="catwayState" placeholder="État" required>
+    <button type="submit">Créer Catway</button>
+  </form>
+
+  <hr>
 
   <p><a href="/dashboard">← Retour au Dashboard</a></p>
 </body>

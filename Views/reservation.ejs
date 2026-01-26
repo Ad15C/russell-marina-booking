@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Détails de la Réservation</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    table { border-collapse: collapse; margin-bottom: 15px; }
+    th, td { padding: 5px 10px; border: 1px solid #000; }
+    form { margin: 5px 0; }
+    input, select, button { margin: 2px; padding: 4px; }
+    .message { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>Détails de la Réservation</h1>
+  <h2>Utilisateur connecté : <%= user.name %></h2>
+
+    <% if (message) { %>
+        <p class="message"><%= message %></p>
+    <% } %>
+    <% if (error) { %>
+        <p class="error"><%= error %></p>
+    <% } %>
+
+<table>
+    <tr>
+      <th>ID Réservation</th>
+      <td><%= reservation._id %></td>
+    </tr>
+    <tr>
+      <th>Catway</th>
+      <td><%= reservation.catwayNumber %> (ID: <%= reservation.catwayId %>)</td>
+    </tr>
+    <tr>
+      <th>Client</th>
+      <td><%= reservation.clientName %></td>
+    </tr>
+    <tr>
+      <th>Bateau</th>
+      <td><%= reservation.boatName %></td>
+    </tr>
+    <tr>
+      <th>Check-in</th>
+      <td><%= reservation.checkIn.toDateString() %></td>
+    </tr>
+    <tr>
+      <th>Check-out</th>
+      <td><%= reservation.checkOut.toDateString() %></td>
+    </tr>
+  </table>
+
+  <!-- Supprimer la réservation -->
+    <form action="/catways/<%= reservation.catwayId %>/reservations/<%= reservation._id %>?_method=DELETE" method="POST">
+        <button type="submit">Supprimer cette réservation</button>
+    </form>
+
+  <p>
+    <a href="/catways/<%= reservation.catwayId %>/reservations">← Retour à la liste des réservations</a> |
+    <a href="/dashboard">← Retour au Dashboard</a>
+  </p>
+</body>
+</html>

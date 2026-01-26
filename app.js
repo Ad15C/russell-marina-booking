@@ -182,37 +182,46 @@ app.post('/catways/deleteById', protect, async (req, res) => {
 /* Routes pour les réservations */
 app.use('/api/reservations', protect, reservationsRoutes);
 
-/*Détail d’une réservation */
-app.get('/catways/:id/reservations/:reservationId', protect, async (req, res) => {
-  const reservation = await Reservation.findById(req.params.reservationId);
+/* Liste des réservations pour un catway */
+app.get('/catways/:id/reservations', protect, async (req, res) => {
+  const catway = await Catway.findById(req.params.id);
+  if (!catway) return res.redirect('/dashboard');
 
-  res.render('reservation', {
-    reservation,
-    user: req.user
-  });
+  const reservations = await Reservation.find({ catwayId: catway._id });
+  res.render('reservations', { user: req.session.user, catway, reservations, message: null, error: null });
+});
+
+/*Détail d’une réservation */
+app.get('/catways/:catwayId/reservations/:reservationId', protect, async (req, res) => {
+  const reservation = await Reservation.findById(req.params.reservationId);
+  if (!reservation) return res.redirect(`/catways/${req.params.catwayId}/reservations`);
+
+  res.render('reservation', { user: req.session.user, reservation, message: null, error: null });
 });
 
 /*Créer une réservation pour un catway */
 app.post('/catways/:id/reservations', protect, async (req, res) => {
   const catway = await Catway.findById(req.params.id);
+  if (!catway) return res.redirect('/dashboard');
 
-  await Reservation.create({
-    catwayId: catway._id,
-    catwayNumber: catway.catwayNumber,
-    clientName: req.body.clientName,
-    boatName: req.body.boatName,
-    checkIn: req.body.checkIn,
-    checkOut: req.body.checkOut
-  });
+  const { clientName, boatName, checkIn, checkOut } = req.body;
 
-  res.redirect(`/catways/${req.params.id}/reservations`);
+  /* Validation simple */
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+  if (checkInDate < today || checkOutDate <= checkInDate) {
+    return res.redirect(`/catways/${catway._id}/reservations`);
+  }
+
+  await Reservation.create({ catwayId: catway._id, catwayNumber: catway.catwayNumber, clientName, boatName, checkIn, checkOut });
+  res.redirect(`/catways/${catway._id}/reservations`);
 });
 
 /* Supprimer une réservation */
-app.delete('/catways/:id/reservations/:reservationId', protect, async (req, res) => {
+app.delete('/catways/:catwayId/reservations/:reservationId', protect, async (req, res) => {
   await Reservation.findByIdAndDelete(req.params.reservationId);
-
-  res.redirect(`/catways/${req.params.id}/reservations`);
+  res.redirect(`/catways/${req.params.catwayId}/reservations`);
 });
 
 

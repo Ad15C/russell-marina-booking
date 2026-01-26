@@ -41,13 +41,40 @@ async function createReservation(req, res) {
     const { catwayId } = req.params;
     const { clientName, boatName, checkIn, checkOut } = req.body;
 
+    /* Vérifier que le catway existe */
     const catway = await Catway.findById(catwayId);
     if (!catway) {
-      return res.status(404).json({ success: false, message: 'Le catway est introuvable' });
+      return res.status(404).json({
+        success: false,
+        message: 'Le catway est introuvable'
+      });
     }
 
+     /* Validation des dates */
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
+    if (checkInDate < today) {
+      return res.status(400).json({
+        success: false,
+        message: 'La date de début ne peut pas être antérieure à aujourd’hui'
+      });
+    }
+
+    if (checkOutDate <= checkInDate) {
+      return res.status(400).json({
+        success: false,
+        message: 'La date de fin doit être postérieure à la date de début'
+      });
+    }
+
+    /* Créer la réservation */
     const reservation = await Reservation.create({
       catwayId,
+      catwayNumber: catway.catwayNumber, 
       clientName,
       boatName,
       checkIn,
