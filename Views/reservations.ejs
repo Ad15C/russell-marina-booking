@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste des Réservations</title>
+  <style>
+  body { font-family: Arial, sans-serif; }
+  table { border-collapse: collapse; margin-bottom: 15px; }
+  th, td { padding: 5px 10px; border: 1px solid #000; }
+  form { margin: 5px 0; }
+  input, select, button { margin: 2px; padding: 4px; }
+  .message { color: green; }
+  .error { color: red; }
+</style>
+
+</head>
+<body>
+  <h1>Bienvenue <%= user.name %> sur le Port de Plaisance</h1>
+
+  <% if (message) { %>
+    <p class="message"><%= message %></p>
+  <% } %>
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <h2>Liste des Réservations</h2>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Catway</th>
+      <th>Client</th>
+      <th>Bateau</th>
+      <th>Check-in</th>
+      <th>Check-out</th>
+      <th>Actions</th>
+    </tr>
+    <% reservations.forEach(reservation => { %>
+    <tr>
+      <td><%= reservation._id %></td>
+      <td><%= reservation.catwayNumber %></td>
+      <td><%= reservation.clientName %></td>
+      <td><%= reservation.boatName %></td>
+      <td><%= reservation.checkIn.toDateString() %></td>
+      <td><%= reservation.checkOut.toDateString() %></td>
+      <td>
+        <!-- Voir le détail -->
+        <a href="/catways/<%= reservation.catwayId %>/reservations/<%= reservation._id %>">Voir</a>
+
+        <!-- Supprimer -->
+        <form action="/catways/<%= reservation.catwayId %>/reservations/<%= reservation._id %>?_method=DELETE" method="POST">
+          <button type="submit">Supprimer</button>
+        </form>
+      </td>
+    </tr>
+    <% }) %>
+  </table>
+
+  <hr/>
+
+  <h2>Créer une nouvelle Réservation</h2>
+  <form action="/catways/<%= newReservationCatwayId || '' %>/reservations" method="POST">
+    <select name="catwayId" required>
+      <option value="">--Choisir un catway--</option>
+      <% catways.forEach(catway => { %>
+        <option value="<%= catway._id %>"><%= catway.catwayNumber %></option>
+      <% }) %>
+    </select>
+    <input type="text" name="clientName" placeholder="Nom du client" required />
+    <input type="text" name="boatName" placeholder="Nom du bateau" required />
+    <input type="date" name="checkIn" min="<%= new Date().toISOString().split('T')[0] %>" required />
+    <input type="date" name="checkOut" min="<%= new Date().toISOString().split('T')[0] %>" required />
+    <button type="submit">Créer réservation</button>
+  </form>
+  <p>
+    <a href="/dashboard">← Retour au Dashboard</a>
+  </p>
+</body>
+</html>

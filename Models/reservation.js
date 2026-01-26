@@ -42,4 +42,5 @@ const reservationSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Reservation', reservationSchema);
+/* Évite l'erreur OverwriteModelError */
+module.exports = mongoose.models.Reservation || mongoose.model('Reservation', reservationSchema);
