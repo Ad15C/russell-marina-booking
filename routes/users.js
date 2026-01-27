@@ -16,9 +16,11 @@ router.post('/', userController.createUser);
 router.put('/', userController.updateUser);
 
 /* Supprimer un utilisateur */
-router.delete('/', userController.deleteUser);
+router.delete('/deleteById', userController.deleteUserById);
+
 
 /* Récupérer tous les utilisateurs */
 router.get('/', userController.getAllUsers);
+
 
 module.exports = router;

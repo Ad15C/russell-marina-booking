@@ -1,21 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const { getAllReservations, getReservationById, createReservation, deleteReservation } = require('../controllers/reservationController');
 const protect = require('../middleware/auth');
 
-/* Toutes les routes CRUD pour les réservations */
+const {
+  createReservation,
+  createReservationFromDashboard,
+  getReservationById,
+  deleteReservation
+} = require('../controllers/reservationController');
+
 router.use(protect);
 
-/* Liste des réservations pour un catway (JSON) */
-router.get('/catways/:catwayId/reservations', getAllReservations);
-
-/* Détail d’une réservation */
-router.get('/catways/:catwayId/reservations/:reservationId', getReservationById);
-
-/* Créer une réservation */
+/* API */
 router.post('/catways/:catwayId/reservations', createReservation);
-
-/* Supprimer une réservation */
+router.get('/catways/:catwayId/reservations/:reservationId', getReservationById);
 router.delete('/catways/:catwayId/reservations/:reservationId', deleteReservation);
+
+/* Dashboard */
+router.post('/from-dashboard', createReservationFromDashboard);
 
 module.exports = router;

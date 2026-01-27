@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Catway = require('../models/catway');
+const Reservation = require('../models/Reservation');
 
 /* Récupérer tous les catways */
 async function getAllCatways() {
@@ -40,16 +41,23 @@ async function updateCatway(id, data) {
     });
 }
 
+/* Vérifier si un catway a des réservations */
+async function catwayHasReservations(catwayId) {
+  return Reservation.exists({ catwayId });
+}
 
 /* Supprimer un catway */
 async function deleteCatway(id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return null;
     return await Catway.findByIdAndDelete(id);
 }
+
 
 module.exports = {
     getAllCatways,
     getCatwayById,
     createCatway,
     updateCatway,
-    deleteCatway
+    deleteCatway,
+    catwayHasReservations
 };

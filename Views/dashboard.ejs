@@ -41,25 +41,23 @@
   </form>
   
   <h3>Modifier un utilisateur</h3>
-
   <form action="/api/users" method="POST">
-    <input type="hidden" name="_method" value="PUT" />
-    <input type="text" name="name" placeholder="Nom existant" required />
-    <input type="email" name="email" placeholder="Email existant" />
-    <input type="text" name="newName" placeholder="Nouveau nom" />
-    <input type="email" name="newEmail" placeholder="Nouvel email" />
-    <input type="password" name="newPassword" placeholder="Nouveau mot de passe" />
-    <button type="submit">Modifier utilisateur</button>
-  </form>
+      <input type="hidden" name="_method" value="PUT" />
+      <input type="text" name="name" placeholder="Nom existant" required />
+      <input type="email" name="email" placeholder="Email existant" />
+      <input type="text" name="newName" placeholder="Nouveau nom" />
+      <input type="email" name="newEmail" placeholder="Nouvel email" />
+      <input type="password" name="newPassword" placeholder="Nouveau mot de passe" />
+      <button type="submit">Modifier utilisateur</button>
+    </form>
 
   <h3>Supprimer un utilisateur</h3>
-  <form action="/api/users" method="POST">
-    <input type="hidden" name="_method" value="DELETE" />
-    <input type="text" name="name" placeholder="Nom utilisateur" />
-    <input type="email" name="email" placeholder="Email utilisateur" />
-    <button type="submit">Supprimer utilisateur</button>
-  </form>
-
+    <form action="/api/users/deleteById" method="POST">
+      <input type="hidden" name="_method" value="DELETE" />
+      <input type="text" name="id" placeholder="ID utilisateur" required />
+      <button type="submit">Supprimer utilisateur</button>
+    </form>
+<hr/>
 
 <h2>Gestion des catways</h2>
 
@@ -83,31 +81,33 @@
           <a href="/catways/<%= catway._id %>">Voir</a>
 
           <!-- Modifier -->
-          <form action="/catways/<%= catway._id %>" method="POST" style="display:inline;">
-            <input type="hidden" name="_method" value="PUT">
+          <form action="/catways/<%= catway._id %>" method="POST">
+          <input type="hidden" name="_method" value="PUT">
             <select name="type">
               <option value="">--Type--</option>
               <option value="long" <%= catway.type === 'long' ? 'selected' : '' %>>Long</option>
               <option value="short" <%= catway.type === 'short' ? 'selected' : '' %>>Short</option>
             </select>
-            <input type="text" name="catwayState" value="<%= catway.catwayState %>">
+            <select name="catwayState" required>
+              <option value="libre" <%= catway.catwayState === 'libre' ? 'selected' : '' %>>Libre</option>
+              <option value="occupé" <%= catway.catwayState === 'occupé' ? 'selected' : '' %>>Occupé</option>
+              <option value="en maintenance" <%= catway.catwayState === 'en maintenance' ? 'selected' : '' %>>En maintenance</option>
+            </select>
             <button type="submit">Modifier</button>
           </form>
 
-          <!-- Supprimer -->
+          <!-- Supprimer depuis le tableau -->
           <form action="/catways/<%= catway._id %>" method="POST" style="display:inline;">
             <input type="hidden" name="_method" value="DELETE">
             <button type="submit">Supprimer</button>
           </form>
 
-          <!-- Réserver -->
-          <a href="/catways/<%= catway._id %>/reserve">Réserver</a>
+
         </td>
       </tr>
     <% }) %>
   </table>
 
-<hr/>
 
   <h3>Créer un nouveau catway</h3>
     <form action="/catways" method="POST">
@@ -116,32 +116,65 @@
         <option value="long">Long</option>
         <option value="short">Short</option>
       </select>
-      <input type="text" name="catwayState" placeholder="État" required />
+      <select name="catwayState" required>
+        <option value="libre">Libre</option>
+        <option value="occupé">Occupé</option>
+        <option value="en maintenance">En maintenance</option>
+      </select>
       <button type="submit">Créer un catway</button>
     </form>
 
-
-<hr/>
-
   <h3>Modifier un catway par ID</h3>
-  <form action="/catways/updateById" method="POST">
-    <input type="text" name="id" placeholder="ID du catway à modifier" required />
-    <select name="type">
-      <option value="">--Type--</option>
-      <option value="long">Long</option>
-      <option value="short">Short</option>
-    </select>
-    <input type="text" name="catwayState" placeholder="État du catway" />
-    <button type="submit">Modifier le catway</button>
-  </form>
+    <form action="" method="POST" id="updateCatwayForm">
+      <input type="text" name="id" id="idInput" placeholder="ID du catway à modifier" required />
+      <select name="type">
+        <option value="">--Type--</option>
+        <option value="long">Long</option>
+        <option value="short">Short</option>
+      </select>
+      <select name="catwayState">
+        <option value="libre">Libre</option>
+        <option value="occupé">Occupé</option>
+        <option value="en maintenance">En maintenance</option>
+      </select>
+      <button type="submit">Modifier le catway</button>
+    </form>
 
-<hr/>
+    <script>
+      const updateForm = document.getElementById('updateCatwayForm');
+      updateForm.addEventListener('submit', function(e){
+        const id = document.getElementById('idInput').value;
+        updateForm.action = '/catways/' + id; /* vers route Dashboard UI */
+        /* ajout method override pour PUT */
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'PUT';
+        updateForm.appendChild(methodInput);
+      });
+    </script>
+
 
   <h3>Supprimer un catway par ID</h3>
-   <form action="/catways/deleteById" method="POST">
-      <input type="text" name="id" placeholder="ID du catway à supprimer" required />
+    <form action="" method="POST" id="deleteCatwayForm">
+      <input type="text" name="id" id="idInputDelete" placeholder="ID du catway à supprimer" required />
       <button type="submit">Supprimer le catway</button>
     </form>
+
+    <script>
+      const deleteForm = document.getElementById('deleteCatwayForm');
+      deleteForm.addEventListener('submit', function(e){
+        const id = document.getElementById('idInputDelete').value;
+        deleteForm.action = '/catways/' + id; /* vers route Dashboard UI */
+        /* ajout method override pour DELETE */
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'DELETE';
+        deleteForm.appendChild(methodInput);
+      });
+    </script>
+
 
 
 <hr>
@@ -149,13 +182,13 @@
   <h2>Gestion des réservations</h2>
 
     <h3>Créer une réservation</h3>
-      <form action="/catways/reservations" method="POST">
+      <form action="/api/reservations/from-dashboard" method="POST">
         <select name="catwayId" required>
-          <option value="">--Choisir un catway--</option>
           <% catways.forEach(catway => { %>
             <option value="<%= catway._id %>"><%= catway.catwayNumber %></option>
           <% }) %>
         </select>
+
         <input type="text" name="clientName" placeholder="Nom du client" required />
         <input type="text" name="boatName" placeholder="Nom du bateau" required />
         <input type="date" name="checkIn" required />
@@ -163,38 +196,51 @@
         <button type="submit">Créer réservation</button>
       </form>
 
-<hr>
+
 
     <h3>Supprimer une réservation</h3>
       <form method="POST" id="deleteReservationForm">
         <input type="hidden" name="_method" value="DELETE">
-        <select name="catwayId" required>
-          <option value="">--Choisir un catway--</option>
-          <% catways.forEach(catway => { %>
-            <option value="<%= catway._id %>"><%= catway.catwayNumber %></option>
+        <select name="reservationId" required>
+          <option value="">--Choisir une réservation--</option>
+          <% reservations.forEach(r => { %>
+            <option value="<%= r._id %>" data-catway="<%= r.catwayId %>">
+              <%= r.clientName %> | Catway <%= r.catwayNumber %>
+            </option>
           <% }) %>
         </select>
-        <input type="text" name="reservationId" placeholder="ID de la réservation" required>
         <button type="submit">Supprimer réservation</button>
       </form>
 
       <script>
         const form = document.getElementById('deleteReservationForm');
-        form.addEventListener('submit', function () {
-          const catwayId = form.catwayId.value;
-          const reservationId = form.reservationId.value;
+        form.addEventListener('submit', function (e) {
+          const selectedOption = form.reservationId.selectedOptions[0];
+          const reservationId = selectedOption.value;
+          const catwayId = selectedOption.dataset.catway; // récupère le catwayId
           form.action = `/catways/${catwayId}/reservations/${reservationId}?_method=DELETE`;
         });
       </script>
 
-    <hr>
 
       <h3>Détails de réservation</h3>
-        <form action="/catways/:catwayId/reservations/:reservationId" method="GET">
+        <form id="viewReservationForm" method="GET">
           <input type="text" name="catwayId" placeholder="ID du catway" required />
           <input type="text" name="reservationId" placeholder="ID de la réservation" required />
           <button type="submit">Voir détail réservation</button>
         </form>
+
+        <script>
+        const viewForm = document.getElementById('viewReservationForm');
+        viewForm.addEventListener('submit', function (e) {
+          e.preventDefault(); // éviter soumission immédiate
+          const catwayId = viewForm.catwayId.value;
+          const reservationId = viewForm.reservationId.value;
+          viewForm.action = `/catways/${catwayId}/reservations/${reservationId}`;
+          viewForm.submit();
+        });
+        </script>
+
 
   <hr>
 

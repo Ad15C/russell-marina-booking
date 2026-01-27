@@ -34,15 +34,23 @@
       <option value="long" <%= catway.type === 'long' ? 'selected' : '' %>>Long</option>
       <option value="short" <%= catway.type === 'short' ? 'selected' : '' %>>Short</option>
     </select>
-    <input type="text" name="catwayState" value="<%= catway.catwayState %>">
+    <select name="catwayState" required>
+        <option value="libre" <%= catway.catwayState === 'libre' ? 'selected' : '' %>>Libre</option>
+        <option value="occupé" <%= catway.catwayState === 'occupé' ? 'selected' : '' %>>Occupé</option>
+        <option value="en maintenance" <%= catway.catwayState === 'en maintenance' ? 'selected' : '' %>>En maintenance</option>
+    </select>
     <button type="submit">Modifier</button>
   </form>
 
   <h2>Supprimer ce Catway</h2>
-  <form action="/catways/<%= catway._id %>" method="POST">
+    <form 
+    action="/catways/<%= catway._id %>" 
+    method="POST"
+    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce catway ?');"
+    >
     <input type="hidden" name="_method" value="DELETE">
     <button type="submit">Supprimer</button>
-  </form>
+    </form>
 
   <hr>
 
