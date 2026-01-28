@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <title>Documentation API - Port de Plaisance</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
+    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
     h1, h2, h3 { margin-top: 30px; }
     code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
-    pre { background: #f4f4f4; padding: 10px; border-radius: 4px; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
     .endpoint { margin-bottom: 30px; }
     .method { font-weight: bold; padding: 2px 6px; border-radius: 3px; color: #fff; }
     .GET { background: #28a745; }
@@ -18,6 +18,8 @@
     input, select, button, textarea { margin: 4px 0; padding: 5px; width: 100%; }
     .response { background: #e9ecef; padding: 10px; border-radius: 4px; }
     .note { font-style: italic; color: #555; }
+    .disabled { opacity: 0.6; pointer-events: none; }
+    ol li { margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -25,15 +27,38 @@
 
   <p>Connecté en tant que : <%= user.name %></p>
   <% if(user.name === "Invité"){ %>
-    <p class="note">Pour accéder à toutes les fonctionnalités interactives, veuillez vous connecter.</p>
+    <p class="note">Pour accéder aux fonctionnalités interactives, veuillez vous connecter.</p>
   <% } %>
 
+  <!-- ================= Vue d’ensemble ================= -->
+  <h2>Vue d’ensemble</h2>
   <p>Cette API permet de gérer les <strong>catways</strong> et les <strong>réservations</strong> via REST.  
-  Vous devez fournir un token JWT dans l’en-tête <code>Authorization: Bearer &lt;token&gt;</code>.</p>
+  Vous pouvez l’utiliser pour créer, modifier, supprimer et consulter vos catways et réservations.</p>
+  <p>Tous les endpoints nécessitent un <strong>token JWT</strong> fourni dans l’en-tête :</p>
+  <pre>Authorization: Bearer &lt;token&gt;</pre>
+
+  <!-- ================= Authentification ================= -->
+  <h2>Authentification</h2>
+  <p>Pour obtenir un token JWT :</p>
+  <ol>
+    <li>Créez un compte via <code>/register</code></li>
+    <li>Connectez-vous via <code>/api/auth/login</code> avec votre email et mot de passe</li>
+    <li>Le serveur retourne un token que vous devez stocker et envoyer dans <code>Authorization</code></li>
+  </ol>
+
+  <!-- ================= Tutoriel rapide ================= -->
+  <h2>Tutoriel rapide</h2>
+  <ol>
+    <li>Récupérer la liste des catways avec <code>GET /api/catways</code></li>
+    <li>Créer un catway avec <code>POST /api/catways</code></li>
+    <li>Créer une réservation avec <code>POST /api/reservations</code></li>
+    <li>Supprimer un catway ou une réservation avec <code>DELETE</code></li>
+    <li>Vérifier que toutes les actions échouent si vous n’êtes pas authentifié</li>
+  </ol>
 
   <hr>
 
-  <!-- ================= Catways ================= -->
+  <!-- ================= Endpoints Catways ================= -->
   <h2>Endpoints Catways</h2>
 
   <div class="endpoint">
@@ -41,12 +66,7 @@
     <p>Liste tous les catways.</p>
     <pre class="response">
 [
-  {
-    "_id": "64f1c0a3...",
-    "catwayNumber": 1,
-    "type": "long",
-    "catwayState": "libre"
-  }
+  { "_id": "64f1c0a3...", "catwayNumber": 1, "type": "long", "catwayState": "libre" }
 ]
     </pre>
   </div>
@@ -86,7 +106,7 @@
 
   <hr>
 
-  <!-- ================= Réservations ================= -->
+  <!-- ================= Endpoints Réservations ================= -->
   <h2>Endpoints Réservations</h2>
 
   <div class="endpoint">
@@ -94,15 +114,9 @@
     <p>Liste toutes les réservations.</p>
     <pre class="response">
 [
-  {
-    "_id": "64f1c2b4...",
-    "catwayId": "64f1c0a3...",
-    "catwayNumber": 1,
-    "clientName": "Jean Dupont",
-    "boatName": "Le Marin",
-    "checkIn": "2026-01-28",
-    "checkOut": "2026-02-01"
-  }
+  { "_id": "64f1c2b4...", "catwayId": "64f1c0a3...", "catwayNumber": 1,
+    "clientName": "Jean Dupont", "boatName": "Le Marin",
+    "checkIn": "2026-01-28", "checkOut": "2026-02-01" }
 ]
     </pre>
   </div>
@@ -114,9 +128,7 @@
     <form id="createReservationForm">
       <select name="catwayId" required>
         <% catways.forEach(c => { %>
-          <option value="<%= c._id %>">
-            Catway <%= c.catwayNumber %> (<%= c.catwayState %>)
-          </option>
+          <option value="<%= c._id %>">Catway <%= c.catwayNumber %> (<%= c.catwayState %>)</option>
         <% }) %>
       </select>
       <input type="text" name="clientName" placeholder="Nom du client" required>
@@ -145,77 +157,80 @@
 
   <!-- ================= Inspiration externe ================= -->
   <h2>Inspiration : GitHub Checks API</h2>
-  <p>Pour comprendre comment les systèmes de vérifications et états peuvent fonctionner, GitHub fournit une API REST spécifique pour les GitHub Apps :</p>
+  <p>Pour comprendre les systèmes de vérifications et états, GitHub fournit une API REST spécifique pour les GitHub Apps :</p>
   <ul>
     <li>Créer des suites de vérifications pour chaque commit</li>
     <li>Gérer l’état de chaque exécution : <code>queued</code>, <code>in_progress</code>, <code>completed</code>, etc.</li>
     <li>Ajouter des annotations détaillées par ligne de code</li>
     <li>Réexécuter les vérifications si nécessaire</li>
   </ul>
-  <p>Cette approche peut inspirer comment tu pourrais enrichir ton API pour gérer des statuts ou validations complexes.</p>
+  <p>Cette approche peut inspirer comment enrichir ton API pour gérer des statuts ou validations complexes.</p>
   <p>Pour plus d’infos, consultez la <a href="https://docs.github.com/fr/rest/guides/using-the-rest-api-to-interact-with-checks?apiVersion=2022-11-28" target="_blank">documentation officielle GitHub Checks API</a>.</p>
 
   <hr>
 
+  <!-- ================= Scripts interactifs ================= -->
   <script>
-    // Formulaires interactifs seulement si connecté
-    <% if(user.name !== "Invité"){ %>
-    // Créer Catway
-    document.getElementById('createCatwayForm')?.addEventListener('submit', async e => {
-      e.preventDefault();
-      const form = e.target;
-      const data = {
-        catwayNumber: form.catwayNumber.value,
-        type: form.type.value,
-        catwayState: form.catwayState.value
-      };
-      const res = await fetch('/api/catways', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+    const userConnected = "<%= user.name !== 'Invité' %>" === "true";
+
+    if(userConnected){
+      /* Créer Catway */
+      document.getElementById('createCatwayForm')?.addEventListener('submit', async e => {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+          catwayNumber: form.catwayNumber.value,
+          type: form.type.value,
+          catwayState: form.catwayState.value
+        };
+        const res = await fetch('/api/catways', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        document.getElementById('catwayResponse').textContent = JSON.stringify(json, null, 2);
       });
-      const json = await res.json();
-      document.getElementById('catwayResponse').textContent = JSON.stringify(json, null, 2);
-    });
 
-    // Supprimer Catway
-    document.getElementById('deleteCatwayForm')?.addEventListener('submit', async e => {
-      e.preventDefault();
-      const id = e.target.id.value;
-      const res = await fetch(`/api/catways/${id}`, { method: 'DELETE' });
-      const json = await res.json();
-      document.getElementById('catwayDeleteResponse').textContent = JSON.stringify(json, null, 2);
-    });
-
-    // Créer Réservation
-    document.getElementById('createReservationForm')?.addEventListener('submit', async e => {
-      e.preventDefault();
-      const form = e.target;
-      const data = {
-        catwayId: form.catwayId.value,
-        clientName: form.clientName.value,
-        boatName: form.boatName.value,
-        checkIn: form.checkIn.value,
-        checkOut: form.checkOut.value
-      };
-      const res = await fetch('/api/reservations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+      /* Supprimer Catway */
+      document.getElementById('deleteCatwayForm')?.addEventListener('submit', async e => {
+        e.preventDefault();
+        const id = e.target.id.value;
+        const res = await fetch(`/api/catways/${id}`, { method: 'DELETE' });
+        const json = await res.json();
+        document.getElementById('catwayDeleteResponse').textContent = JSON.stringify(json, null, 2);
       });
-      const json = await res.json();
-      document.getElementById('reservationResponse').textContent = JSON.stringify(json, null, 2);
-    });
 
-    // Supprimer Réservation
-    document.getElementById('deleteReservationForm')?.addEventListener('submit', async e => {
-      e.preventDefault();
-      const id = e.target.id.value;
-      const res = await fetch(`/api/reservations/${id}`, { method: 'DELETE' });
-      const json = await res.json();
-      document.getElementById('reservationDeleteResponse').textContent = JSON.stringify(json, null, 2);
-    });
-    <% } %>
+      /* Créer Réservation */
+      document.getElementById('createReservationForm')?.addEventListener('submit', async e => {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+          catwayId: form.catwayId.value,
+          clientName: form.clientName.value,
+          boatName: form.boatName.value,
+          checkIn: form.checkIn.value,
+          checkOut: form.checkOut.value
+        };
+        const res = await fetch('/api/reservations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        document.getElementById('reservationResponse').textContent = JSON.stringify(json, null, 2);
+      });
+
+      /* Supprimer Réservation */
+      document.getElementById('deleteReservationForm')?.addEventListener('submit', async e => {
+        e.preventDefault();
+        const id = e.target.id.value;
+        const res = await fetch(`/api/reservations/${id}`, { method: 'DELETE' });
+        const json = await res.json();
+        document.getElementById('reservationDeleteResponse').textContent = JSON.stringify(json, null, 2);
+      });
+    }
   </script>
+
 </body>
 </html>
