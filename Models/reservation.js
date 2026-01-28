@@ -32,7 +32,7 @@ const reservationSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 /* Pré-sauvegarde : vérifie chevauchement */
-reservationSchema.pre('save', async function(next) {
+reservationSchema.pre('save', async function() {
   const Reservation = mongoose.model('Reservation', reservationSchema);
 
   const overlapping = await Reservation.findOne({
@@ -44,10 +44,9 @@ reservationSchema.pre('save', async function(next) {
   });
 
   if (overlapping) {
-    return next(new Error('Ce catway est déjà réservé sur ces dates'));
+    throw new Error('Ce catway est déjà réservé sur ces dates');
   }
-
-  next();
 });
+
 
 module.exports = mongoose.models.Reservation || mongoose.model('Reservation', reservationSchema);

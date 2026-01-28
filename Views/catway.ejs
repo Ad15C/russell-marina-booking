@@ -29,6 +29,7 @@
   <h2>Modifier ce Catway</h2>
   <form action="/catways/<%= catway._id %>" method="POST">
     <input type="hidden" name="_method" value="PUT">
+    <input type="hidden" name="redirectTo" value="/catways"> 
     <select name="type">
       <option value="">--Type--</option>
       <option value="long" <%= catway.type === 'long' ? 'selected' : '' %>>Long</option>

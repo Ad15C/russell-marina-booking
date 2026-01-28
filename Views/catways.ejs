@@ -46,27 +46,30 @@
 
     <!-- Modifier un catway -->
         <form action="/catways/<%= catway._id %>" method="POST">
-          <input type="hidden" name="_method" value="PUT">
-          <select name="type">
-            <option value="">--Type--</option>
-            <option value="long" <%= catway.type === 'long' ? 'selected' : '' %>>Long</option>
-            <option value="short" <%= catway.type === 'short' ? 'selected' : '' %>>Short</option>
-          </select>
-          <select name="catwayState" required>
-            <option value="libre" <%= catway.catwayState === 'libre' ? 'selected' : '' %>>Libre</option>
-            <option value="occupé" <%= catway.catwayState === 'occupé' ? 'selected' : '' %>>Occupé</option>
-            <option value="en maintenance" <%= catway.catwayState === 'en maintenance' ? 'selected' : '' %>>En maintenance</option>
-        </select>
-          <button type="submit">Modifier</button>
-        </form>
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="redirectTo" value="/catways"> 
+            <select name="type">
+                <option value="">--Type--</option>
+                <option value="long" <%= catway.type === 'long' ? 'selected' : '' %>>Long</option>
+                <option value="short" <%= catway.type === 'short' ? 'selected' : '' %>>Short</option>
+            </select>
+            <select name="catwayState" required>
+                <option value="libre" <%= catway.catwayState === 'libre' ? 'selected' : '' %>>Libre</option>
+                <option value="occupé" <%= catway.catwayState === 'occupé' ? 'selected' : '' %>>Occupé</option>
+                <option value="en maintenance" <%= catway.catwayState === 'en maintenance' ? 'selected' : '' %>>En maintenance</option>
+            </select>
+            <button type="submit">Modifier</button>
+            </form>
+
 
         <!-- Supprimer un catway -->
         <form action="/catways/<%= catway._id %>" method="POST"
-        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce catway ?');"
-        >
-        <input type="hidden" name="_method" value="DELETE">
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce catway ?');">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="redirectTo" value="/catways"> 
         <button type="submit">Supprimer</button>
         </form>
+
 
       </td>
     </tr>
@@ -74,15 +77,20 @@
   </table>
 
   <h2>Créer un nouveau Catway</h2>
-  <form action="/catways" method="POST">
-    <input type="text" name="catwayNumber" placeholder="Numéro" required>
-    <select name="type" required>
-      <option value="long">Long</option>
-      <option value="short">Short</option>
-    </select>
-    <input type="text" name="catwayState" placeholder="État" required>
-    <button type="submit">Créer Catway</button>
-  </form>
+    <form action="/catways" method="POST">
+      <input type="hidden" name="redirectTo" value="/catways"> 
+      <input type="text" name="catwayNumber" placeholder="Numéro" required />
+      <select name="type" required>
+        <option value="long">Long</option>
+        <option value="short">Short</option>
+      </select>
+      <select name="catwayState" required>
+        <option value="libre">Libre</option>
+        <option value="occupé">Occupé</option>
+        <option value="en maintenance">En maintenance</option>
+      </select>
+      <button type="submit">Créer un catway</button>
+    </form>
 
   <hr>
 
