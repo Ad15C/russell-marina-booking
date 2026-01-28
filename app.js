@@ -7,7 +7,6 @@ const methodOverride = require('method-override');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
-const reservationsRoutes = require('./routes/reservations');
 
 const catwayService = require('./services/catwayService');
 const Reservation = require('./models/Reservation');
@@ -27,6 +26,7 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+/* Support des méthodes PUT et DELETE via des formulaires HTML */
 app.use(methodOverride((req, res) => {
   if (req.body && req.body._method) {
     const method = req.body._method;
@@ -35,6 +35,7 @@ app.use(methodOverride((req, res) => {
   }
 }));
 
+/* Configuration des sessions avec cookies */
 app.use(cookieSession({
   name: 'session',
   keys: [process.env.SESSION_SECRET],
@@ -127,7 +128,9 @@ app.get('/catways/:id', protect, async (req, res) => {
 
 
 /* Toutes les routes /api/reservations sont protégées */
-app.use('/api/reservations', protect, reservationsRoutes);
+app.use('/api/reservations', require('./routes/reservationsAPI'));
+app.use('/reservations-dashboard', require('./routes/reservationsDashboard'));
+
 
 /* Liste des réservations */
 app.get('/reservations', protect, async (req, res) => {
@@ -163,6 +166,24 @@ app.get('/catways/:id/reservations', protect, async (req, res) => {
     error: null
   });
 });
+
+app.get('/reservations/:reservationId', protect, async (req, res) => {
+  const reservation = await Reservation
+    .findById(req.params.reservationId)
+    .populate('catwayId');
+
+  if (!reservation) {
+    return res.redirect('/reservations?error=Introuvable');
+  }
+
+  res.render('reservation', {
+    user: req.session.user,
+    reservation
+  });
+});
+
+
+
 
 app.get('/catways/:catwayId/reservations/:reservationId', protect, async (req, res) => {
   const reservation = await Reservation.findById(req.params.reservationId);

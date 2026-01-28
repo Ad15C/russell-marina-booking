@@ -6,15 +6,15 @@ const catwayService = require('../services/catwayService');
 /* Créer un nouveau catway depuis le dashboard */
 exports.createCatway = async (req, res) => {
   try {
-    const { catwayNumber, type, catwayState } = req.body;
+    const { catwayNumber, type, catwayState, redirectTo } = req.body;
     if (!catwayNumber) throw new Error('Le numéro du catway est requis');
     
     await Catway.create({ catwayNumber, type, catwayState });
-    res.redirect('/dashboard?message=Catway créé avec succès !');
+     res.redirect((redirectTo || '/dashboard') + '?message=Catway créé avec succès !');
   } catch (err) {
+    const redirectTo = req.body?.redirectTo || '/dashboard';
     res.redirect(
-      '/dashboard?error=' +
-        encodeURIComponent('Erreur lors de la création du catway : ' + err.message)
+      redirectTo + '?error=' + encodeURIComponent('Erreur lors de la création du catway : ' + err.message)
     );
   }
 };
@@ -22,19 +22,23 @@ exports.createCatway = async (req, res) => {
 /* Mettre à jour un catway depuis le dashboard */
 exports.updateCatwayDashboard = async (req, res) => {
   try {
-    const { type, catwayState } = req.body;
+    const { type, catwayState, redirectTo } = req.body;
     await Catway.findByIdAndUpdate(req.params.id, { type, catwayState });
-    res.redirect('/dashboard?message=Catway modifié avec succès !');
-  } catch (err) {
-    res.redirect(
-      '/dashboard?error=' +
-        encodeURIComponent('Erreur lors de la modification : ' + err.message)
-    );
-  }
+   /* redirection dynamique : si redirectTo existe, on y va, sinon dashboard */
+    res.redirect((redirectTo || '/dashboard') + '?message=Catway modifié avec succès !');
+    } catch (err) {
+        res.redirect(
+        (req.body.redirectTo || '/dashboard') +
+            '?error=' +
+            encodeURIComponent('Erreur lors de la modification : ' + err.message)
+        );
+    }
 };
 
 /* Supprimer un catway depuis le dashboard */
 exports.deleteCatway = async (req, res) => {
+    const { redirectTo } = req.body;
+    const id = req.params.id;
   try {
     const { id } = req.params;
 
@@ -50,12 +54,12 @@ exports.deleteCatway = async (req, res) => {
     /* Supprimer le catway */
     const deleted = await catwayService.deleteCatway(id);
     if (!deleted) {
-      return res.redirect('/catways?error=Catway introuvable');
+      return res.redirect((redirectTo || '/dashboard') + '?error=Catway introuvable');
     }
 
-    res.redirect('/catways?message=Catway supprimé avec succès');
+    res.redirect((redirectTo || '/dashboard') + '?message=Catway supprimé avec succès');
   } catch (err) {
-    res.redirect('/catways?error=' + encodeURIComponent(err.message));
+    res.redirect((req.body.redirectTo || '/dashboard') + '?error=' + encodeURIComponent(err.message));
   }
 };
 

@@ -101,13 +101,10 @@
             <input type="hidden" name="_method" value="DELETE">
             <button type="submit">Supprimer</button>
           </form>
-
-
         </td>
       </tr>
     <% }) %>
   </table>
-
 
   <h3>Créer un nouveau catway</h3>
     <form action="/catways" method="POST">
@@ -175,38 +172,48 @@
       });
     </script>
 
-
-
 <hr>
 
   <h2>Gestion des réservations</h2>
 
     <h3>Créer une réservation</h3>
-      <form action="/api/reservations/from-dashboard" method="POST">
-        <select name="catwayId" required>
+      <form method="POST" action="/reservations-dashboard">
+        <label for="catwayId">Catway :</label>
+        <select name="catwayId" id="catwayId" required>
+          <option value="">--Choisir un catway--</option>
           <% catways.forEach(catway => { %>
-            <option value="<%= catway._id %>"><%= catway.catwayNumber %></option>
+            <option 
+              value="<%= catway._id %>" 
+              <% if(catway.catwayState !== 'libre'){ %> disabled <% } %>
+            >
+              Catway <%= catway.catwayNumber %> 
+              (<%= catway.catwayState === 'libre' ? 'Disponible' : catway.catwayState === 'occupé' ? 'Occupé' : 'Maintenance' %>)
+            </option>
           <% }) %>
         </select>
 
-        <input type="text" name="clientName" placeholder="Nom du client" required />
-        <input type="text" name="boatName" placeholder="Nom du bateau" required />
-        <input type="date" name="checkIn" required />
-        <input type="date" name="checkOut" required />
+
+        <label for="clientName">Nom du client :</label>
+        <input type="text" name="clientName" id="clientName" required>
+
+        <label for="boatName">Nom du bateau :</label>
+        <input type="text" name="boatName" id="boatName" required>
+
+        <label for="checkIn">Check-in :</label>
+        <input type="date" name="checkIn" id="checkIn" required>
+
+        <label for="checkOut">Check-out :</label>
+        <input type="date" name="checkOut" id="checkOut" required>
+
         <button type="submit">Créer réservation</button>
       </form>
 
-
-
     <h3>Supprimer une réservation</h3>
       <form method="POST" id="deleteReservationForm">
-        <input type="hidden" name="_method" value="DELETE">
         <select name="reservationId" required>
           <option value="">--Choisir une réservation--</option>
           <% reservations.forEach(r => { %>
-            <option value="<%= r._id %>" data-catway="<%= r.catwayId %>">
-              <%= r.clientName %> | Catway <%= r.catwayNumber %>
-            </option>
+            <option value="<%= r._id %>"><%= r.clientName %> | Catway <%= r.catwayNumber %></option>
           <% }) %>
         </select>
         <button type="submit">Supprimer réservation</button>
@@ -215,32 +222,63 @@
       <script>
         const form = document.getElementById('deleteReservationForm');
         form.addEventListener('submit', function (e) {
-          const selectedOption = form.reservationId.selectedOptions[0];
-          const reservationId = selectedOption.value;
-          const catwayId = selectedOption.dataset.catway; // récupère le catwayId
-          form.action = `/catways/${catwayId}/reservations/${reservationId}?_method=DELETE`;
+          e.preventDefault(); // empêche le submit normal
+          const reservationId = form.reservationId.value;
+          if (!reservationId) return alert("Choisir une réservation");
+
+          // Redirection POST vers la route serveur
+          fetch(`/reservations-dashboard/${reservationId}/delete`, {
+            method: 'POST'
+          })
+          .then(() => window.location.href = '/dashboard?message=Réservation supprimée !')
+          .catch(err => alert('Erreur suppression: ' + err));
         });
       </script>
 
+    <h3>Liste des Réservations</h3>
+    <p id="formError" style="color:red;"></p>
+      <table border="1" cellpadding="5">
+        <tr>
+          <th>ID Réservation</th>
+          <th>Client</th>
+          <th>Catway</th>
+          <th>Action</th>
+        </tr>
 
-      <h3>Détails de réservation</h3>
-        <form id="viewReservationForm" method="GET">
-          <input type="text" name="catwayId" placeholder="ID du catway" required />
-          <input type="text" name="reservationId" placeholder="ID de la réservation" required />
-          <button type="submit">Voir détail réservation</button>
-        </form>
+        <% reservations.forEach(r => { %>
+          <tr>
+            <td style="font-family: monospace;"><%= r._id %></td>
+            <td><%= r.clientName %></td>
+            <td><%= r.catwayNumber || r.catwayId?.catwayNumber %></td>
+            <td>
+              <a href="/reservations/<%= r._id %>">Voir détail</a>
+            </td>
+          </tr>
+        <% }) %>
+      </table>
 
-        <script>
+
+      <h3>Voir les détails d'une réservation</h3>
+      <form id="viewReservationForm">
+        <input
+          type="text"
+          name="reservationId"
+          placeholder="ID de la réservation"
+          required
+        />
+        <button type="submit">Voir détail réservation</button>
+      </form>
+
+      <script>
         const viewForm = document.getElementById('viewReservationForm');
-        viewForm.addEventListener('submit', function (e) {
-          e.preventDefault(); // éviter soumission immédiate
-          const catwayId = viewForm.catwayId.value;
-          const reservationId = viewForm.reservationId.value;
-          viewForm.action = `/catways/${catwayId}/reservations/${reservationId}`;
-          viewForm.submit();
-        });
-        </script>
 
+        viewForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const reservationId = viewForm.reservationId.value.trim();
+          if (!reservationId) return;
+          window.location.href = `/reservations/${reservationId}`;
+        });
+      </script>
 
   <hr>
 

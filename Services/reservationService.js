@@ -7,7 +7,10 @@ async function validateReservation({ catwayId, clientName, boatName, checkIn, ch
   /* Vérifie que le catway existe */
     const catway = await Catway.findById(catwayId);
   if (!catway) throw new Error('Catway introuvable');
-
+  /* Vérifie que le catway est disponible */
+  if (catway.status === 'occupied') throw new Error('Ce catway est actuellement occupé');
+  if (catway.status === 'maintenance') throw new Error('Ce catway est en maintenance et ne peut pas être réservé');
+/* Vérifie les champs obligatoires */
   if (!clientName || !boatName || !checkIn || !checkOut) {
     throw new Error('Tous les champs sont obligatoires');
   }
@@ -16,6 +19,7 @@ async function validateReservation({ catwayId, clientName, boatName, checkIn, ch
   today.setHours(0, 0, 0, 0);
   const checkInDate = new Date(checkIn);
   const checkOutDate = new Date(checkOut);
+
   /* Prépare les dates */
   if (checkInDate < today) throw new Error("La date d'arrivée ne peut pas être passée");
   if (checkOutDate <= checkInDate) throw new Error("La date de départ doit être après la date d'arrivée");
@@ -23,6 +27,7 @@ async function validateReservation({ catwayId, clientName, boatName, checkIn, ch
   /* Vérifie chevauchement des réservations */
   const overlappingQuery = { catwayId, $or: [{ checkIn: { $lt: checkOutDate }, checkOut: { $gt: checkInDate } }] };
   if (excludeId) overlappingQuery._id = { $ne: excludeId };
+  
   const overlapping = await Reservation.findOne(overlappingQuery);
   if (overlapping) throw new Error('Ce catway est déjà réservé sur ces dates');
 
