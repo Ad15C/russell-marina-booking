@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Documentation API - Port de Plaisance</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2, h3 { margin-top: 30px; }
+    code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 4px; }
+    .endpoint { margin-bottom: 30px; }
+    .method { font-weight: bold; padding: 2px 6px; border-radius: 3px; color: #fff; }
+    .GET { background: #28a745; }
+    .POST { background: #007bff; }
+    .PUT { background: #ffc107; color: #000; }
+    .DELETE { background: #dc3545; }
+    form { margin-top: 10px; }
+    input, select, button, textarea { margin: 4px 0; padding: 5px; width: 100%; }
+    .response { background: #e9ecef; padding: 10px; border-radius: 4px; }
+    .note { font-style: italic; color: #555; }
+  </style>
+</head>
+<body>
+  <h1>Documentation API - Port de Plaisance</h1>
+
+  <p>Connecté en tant que : <%= user.name %></p>
+  <% if(user.name === "Invité"){ %>
+    <p class="note">Pour accéder à toutes les fonctionnalités interactives, veuillez vous connecter.</p>
+  <% } %>
+
+  <p>Cette API permet de gérer les <strong>catways</strong> et les <strong>réservations</strong> via REST.  
+  Vous devez fournir un token JWT dans l’en-tête <code>Authorization: Bearer &lt;token&gt;</code>.</p>
+
+  <hr>
+
+  <!-- ================= Catways ================= -->
+  <h2>Endpoints Catways</h2>
+
+  <div class="endpoint">
+    <span class="method GET">GET</span> <code>/api/catways</code>
+    <p>Liste tous les catways.</p>
+    <pre class="response">
+[
+  {
+    "_id": "64f1c0a3...",
+    "catwayNumber": 1,
+    "type": "long",
+    "catwayState": "libre"
+  }
+]
+    </pre>
+  </div>
+
+  <div class="endpoint">
+    <span class="method POST">POST</span> <code>/api/catways</code>
+    <p>Créer un nouveau catway.</p>
+    <% if(user.name !== "Invité"){ %>
+    <form id="createCatwayForm">
+      <input type="number" name="catwayNumber" placeholder="Numéro du catway" required>
+      <select name="type" required>
+        <option value="long">Long</option>
+        <option value="short">Short</option>
+      </select>
+      <select name="catwayState" required>
+        <option value="libre">Libre</option>
+        <option value="occupé">Occupé</option>
+        <option value="en maintenance">En maintenance</option>
+      </select>
+      <button type="submit">Créer Catway</button>
+      <pre id="catwayResponse" class="response"></pre>
+    </form>
+    <% } %>
+  </div>
+
+  <div class="endpoint">
+    <span class="method DELETE">DELETE</span> <code>/api/catways/:id</code>
+    <p>Supprime un catway par ID.</p>
+    <% if(user.name !== "Invité"){ %>
+    <form id="deleteCatwayForm">
+      <input type="text" name="id" placeholder="ID du catway" required>
+      <button type="submit">Supprimer Catway</button>
+      <pre id="catwayDeleteResponse" class="response"></pre>
+    </form>
+    <% } %>
+  </div>
+
+  <hr>
+
+  <!-- ================= Réservations ================= -->
+  <h2>Endpoints Réservations</h2>
+
+  <div class="endpoint">
+    <span class="method GET">GET</span> <code>/api/reservations</code>
+    <p>Liste toutes les réservations.</p>
+    <pre class="response">
+[
+  {
+    "_id": "64f1c2b4...",
+    "catwayId": "64f1c0a3...",
+    "catwayNumber": 1,
+    "clientName": "Jean Dupont",
+    "boatName": "Le Marin",
+    "checkIn": "2026-01-28",
+    "checkOut": "2026-02-01"
+  }
+]
+    </pre>
+  </div>
+
+  <div class="endpoint">
+    <span class="method POST">POST</span> <code>/api/reservations</code>
+    <p>Créer une réservation.</p>
+    <% if(user.name !== "Invité"){ %>
+    <form id="createReservationForm">
+      <select name="catwayId" required>
+        <% catways.forEach(c => { %>
+          <option value="<%= c._id %>">
+            Catway <%= c.catwayNumber %> (<%= c.catwayState %>)
+          </option>
+        <% }) %>
+      </select>
+      <input type="text" name="clientName" placeholder="Nom du client" required>
+      <input type="text" name="boatName" placeholder="Nom du bateau" required>
+      <input type="date" name="checkIn" required>
+      <input type="date" name="checkOut" required>
+      <button type="submit">Créer Réservation</button>
+      <pre id="reservationResponse" class="response"></pre>
+    </form>
+    <% } %>
+  </div>
+
+  <div class="endpoint">
+    <span class="method DELETE">DELETE</span> <code>/api/reservations/:id</code>
+    <p>Supprime une réservation par ID.</p>
+    <% if(user.name !== "Invité"){ %>
+    <form id="deleteReservationForm">
+      <input type="text" name="id" placeholder="ID de la réservation" required>
+      <button type="submit">Supprimer Réservation</button>
+      <pre id="reservationDeleteResponse" class="response"></pre>
+    </form>
+    <% } %>
+  </div>
+
+  <hr>
+
+  <!-- ================= Inspiration externe ================= -->
+  <h2>Inspiration : GitHub Checks API</h2>
+  <p>Pour comprendre comment les systèmes de vérifications et états peuvent fonctionner, GitHub fournit une API REST spécifique pour les GitHub Apps :</p>
+  <ul>
+    <li>Créer des suites de vérifications pour chaque commit</li>
+    <li>Gérer l’état de chaque exécution : <code>queued</code>, <code>in_progress</code>, <code>completed</code>, etc.</li>
+    <li>Ajouter des annotations détaillées par ligne de code</li>
+    <li>Réexécuter les vérifications si nécessaire</li>
+  </ul>
+  <p>Cette approche peut inspirer comment tu pourrais enrichir ton API pour gérer des statuts ou validations complexes.</p>
+  <p>Pour plus d’infos, consultez la <a href="https://docs.github.com/fr/rest/guides/using-the-rest-api-to-interact-with-checks?apiVersion=2022-11-28" target="_blank">documentation officielle GitHub Checks API</a>.</p>
+
+  <hr>
+
+  <script>
+    // Formulaires interactifs seulement si connecté
+    <% if(user.name !== "Invité"){ %>
+    // Créer Catway
+    document.getElementById('createCatwayForm')?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        catwayNumber: form.catwayNumber.value,
+        type: form.type.value,
+        catwayState: form.catwayState.value
+      };
+      const res = await fetch('/api/catways', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+      document.getElementById('catwayResponse').textContent = JSON.stringify(json, null, 2);
+    });
+
+    // Supprimer Catway
+    document.getElementById('deleteCatwayForm')?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = e.target.id.value;
+      const res = await fetch(`/api/catways/${id}`, { method: 'DELETE' });
+      const json = await res.json();
+      document.getElementById('catwayDeleteResponse').textContent = JSON.stringify(json, null, 2);
+    });
+
+    // Créer Réservation
+    document.getElementById('createReservationForm')?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        catwayId: form.catwayId.value,
+        clientName: form.clientName.value,
+        boatName: form.boatName.value,
+        checkIn: form.checkIn.value,
+        checkOut: form.checkOut.value
+      };
+      const res = await fetch('/api/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+      document.getElementById('reservationResponse').textContent = JSON.stringify(json, null, 2);
+    });
+
+    // Supprimer Réservation
+    document.getElementById('deleteReservationForm')?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const id = e.target.id.value;
+      const res = await fetch(`/api/reservations/${id}`, { method: 'DELETE' });
+      const json = await res.json();
+      document.getElementById('reservationDeleteResponse').textContent = JSON.stringify(json, null, 2);
+    });
+    <% } %>
+  </script>
+</body>
+</html>

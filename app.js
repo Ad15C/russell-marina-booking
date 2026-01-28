@@ -70,6 +70,18 @@ app.get('/register', (req, res) => {
 /* API Authentification */
 app.use('/api/auth', authRoutes);
 
+app.get('/documentation', async (req, res, next) => {
+  try {
+    const catways = await Catway.find(); 
+    res.render('documentation', { 
+      catways, 
+      user: req.user || { name: 'Invité' } 
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 /* Affichage du dashboard protégé */
 app.get('/dashboard', protect, async (req, res) => {
