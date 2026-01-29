@@ -10,12 +10,15 @@ exports.createUser = async (req, res) => {
     return renderDashboard(req, res, null, 'Tous les champs sont obligatoires');
   }
 
+  if (password.length < 8) {
+    return renderDashboard(req, res, null, 'Le mot de passe doit contenir au moins 8 caractères');
+  }
+
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password
     });
 
     res.redirect(`/dashboard?message=Utilisateur créé (ID : ${user._id})`);
@@ -38,22 +41,19 @@ exports.updateUser = async (req, res) => {
   }
 
   try {
-    const query = {};
-    if (name) query.name = name;
-    if (email) query.email = email;
-
-    const updateData = {};
-    if (newName) updateData.name = newName;
-    if (newEmail) updateData.email = newEmail;
+    const user = await User.findOne(query);
+    if (!user) return renderDashboard(req, res, null, 'Utilisateur non trouvé');
+    /* Met à jour les champs si fournis */
+    if (newName) user.name = newName;
+    if (newEmail) user.email = newEmail;
     if (newPassword) {
-      updateData.password = await bcrypt.hash(newPassword, 10);
+      if (newPassword.length < 8) {
+        return renderDashboard(req, res, null, 'Le mot de passe doit contenir au moins 8 caractères');
+      }
+      user.password = newPassword; /* pre('save') hashera automatiquement */
     }
 
-    const result = await User.updateOne(query, updateData);
-
-    if (result.matchedCount === 0) {
-      return renderDashboard(req, res, null, 'Utilisateur non trouvé');
-    }
+    await user.save(); /* Sauvegarde les modifications */
 
     renderDashboard(req, res, 'Utilisateur modifié avec succès');
   } catch (err) {
@@ -66,15 +66,15 @@ exports.deleteUserById = async (req, res) => {
   try {
     const { id } = req.body;
     if (!id) {
-      return res.redirect('/dashboard?error=ID utilisateur requis');
+      return res.redirect("/dashboard?error=ID utilisateur requis");
     }
 
     const deletedUser = await User.findByIdAndDelete(id);
     if (!deletedUser) {
-      return res.redirect('/dashboard?error=Utilisateur introuvable');
+      return res.redirect("/dashboard?error=Utilisateur introuvable");
     }
 
-    res.redirect('/dashboard?message=Utilisateur supprimé');
+    res.redirect("/dashboard?message=Utilisateur supprimé");
   } catch (err) {
     res.redirect('/dashboard?error=' + encodeURIComponent(err.message));
   }

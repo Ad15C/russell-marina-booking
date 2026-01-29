@@ -49,7 +49,7 @@
           <a href="/reservations/<%= reservation._id %>">Voir</a>
 
            <!-- Supprimer via dashboard -->
-        <form method="POST" action="/reservations-dashboard/<%= reservation._id %>/delete" style="display:inline;">
+        <form method="POST" action="/reservations/<%= reservation._id %>/delete" style="display:inline;">
           <button type="submit">Supprimer</button>
         </form>
         </td>
@@ -61,7 +61,7 @@
 
   <!-- FORMULAIRE DE CRÉATION DE RÉSERVATION -->
   <h2>Créer une réservation</h2>
-        <form method="POST" action="/reservations-dashboard">
+        <form method="POST" action="/reservations">
             <input type="hidden" name="redirectTo" value="/reservations">
             <label for="catwayId">Catway :</label>
             <select name="catwayId" id="catwayId" required>

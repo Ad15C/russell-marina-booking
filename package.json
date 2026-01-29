@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "env-cmd -f ./env/.env.dev nodemon server.js",
-    "start": "env-cmd -f ./env/.env.prod node server.js"
+    "start": "env-cmd -f ./env/.env.prod node server.js",
+    "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/Ad15C/russell_marina#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cookie-session": "^2.1.1",
     "cors": "^2.8.5",
@@ -32,8 +34,10 @@
   },
   "devDependencies": {
     "clinic": "^13.0.0",
+    "cross-env": "^10.1.0",
     "env-cmd": "^11.0.0",
     "jest": "^30.2.0",
+    "mongodb-memory-server": "^11.0.1",
     "nodemon": "^3.1.11",
     "supertest": "^7.2.2"
   }

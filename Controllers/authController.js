@@ -7,15 +7,22 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    /* Crée l'utilisateur */
+    if (!name || !email || !password) {
+      return res.status(400).render('register', { error: 'Tous les champs sont obligatoires' });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).render('register', { error: 'Le mot de passe doit contenir au moins 8 caractères' });
+    }
+
+    /* Création de l'utilisateur (hash dans authService) */
     const user = await authService.register(name, email, password);
 
-    /* Connecte automatiquement l'utilisateur après inscription */
+    /* Création du token JWT */
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    req.session.token = token;      
+    req.session.token = token;
     req.session.user = { id: user._id, name: user.name, email: user.email };
-    console.log('Session après login:', req.session);
-    /* Redirige vers le dashboard */
+
     res.redirect('/dashboard');
   } catch (err) {
     res.status(400).render('register', { error: err.message });
@@ -36,7 +43,7 @@ exports.login = async (req, res) => {
 
     console.log('Session après login :', req.session);
     /* Redirige vers le dashboard */
-    res.redirect('/dashboard');
+    res.redirect("/dashboard");
   } catch (err) {
     /* Affiche le message d'erreur sur la page de login */
     res.status(401).render('login', { error: err.message });
