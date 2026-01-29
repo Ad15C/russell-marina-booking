@@ -16,40 +16,49 @@ Mise en place d'une **API REST privée** permettant :
 
 ---
 
-##  Utilisateurs
+## Utilisateurs
 
 Un utilisateur est caractérisé par :
+
 - un nom
 - une adresse e-mail
 - un mot de passe (hashé)
 
 ---
 
-##  Catways
+## Catways
 
 Les catways possèdent :
+
 - un numéro de pont
-- un type
+- un type (court ou long)
+- un état (libre, occupé, maintenance)
 - une description
 
 ---
 
-##  Réservations
+## Réservations
 
 Une réservation contient :
+
 - le numéro du catway
 - le nom du client
 - le nom du bateau
-- une date de début
-- une date de fin
+- une date de début (`checkIn`)
+- une date de fin (`checkOut`)
+
+Chaque réservation est validée pour :
+
+- ne pas chevaucher une autre réservation sur le même catway
+- ne pas avoir de date d’arrivée antérieure à aujourd’hui
+- avoir une date de départ postérieure à la date d’arrivée
 
 ---
 
-##  Technologies et dépendances
-
-Le projet utilise les technologies suivantes :
+## Technologies et dépendances
 
 ### Dépendances principales
+
 - express
 - mongoose
 - cors
@@ -58,6 +67,7 @@ Le projet utilise les technologies suivantes :
 - cookie-session
 
 ### Dépendances de développement
+
 - nodemon
 - clinic
 - clinic flame
@@ -68,15 +78,30 @@ Le projet utilise les technologies suivantes :
 
 ---
 
-##  Lancer le projet
+## Contact
 
-1. Installer les dépendances :
+Pour toutes questions concernant ce projet:
+Adeline
+ad15canon@gmail.com
+
+## Lancer le projet
+
 ```bash
+# 1. Installer les dépendances
 npm install
 
-Contact
+# 2. Configurer les variables d'environnement
+cp env/.env.dev .env
+# Modifier .env pour ajouter votre URI MongoDB et éventuellement le PORT
 
-Pour toute question concernant ce projet, merci de contacter :
+# 3. Initialiser la base de données
+node seed.js
+#Les collections Catways et Réservations seront vidées puis remplies avec les données du seed
 
-Adeline
-📧 ad15canon@gmail.com
+# 4. Lancer le serveur
+npm start
+#L'API sera disponible sur http://localhost:3000/
+
+# 5.Tests
+npm test
+
