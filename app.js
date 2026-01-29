@@ -3,6 +3,7 @@ const cors = require('cors');
 const cookieSession = require('cookie-session');
 const path = require('path');
 const methodOverride = require('method-override');
+const bubbleProf = require('./bubbleProf');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -43,7 +44,6 @@ app.use(cookieSession({
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'strict'
 }));
-
 
 /* Configuration du moteur de vues EJS */
 app.set('view engine', 'ejs');
@@ -99,14 +99,19 @@ app.get('/dashboard', protect, async (req, res) => {
 /* API USERS */
 app.use('/api/users', protect, userRoutes);
 
-
-
 /* DASHBOARD USERS */
 app.use('/', authRoutes);
 app.use('/api/catways', require('./routes/catwaysAPI'));
 app.use('/catways', protect, require('./routes/catwaysDashboard'));
 app.use('/api/reservations', require('./routes/reservationsAPI'));
 app.use('/reservations', require('./routes/reservationsDashboard'));
+
+app.get('/test-bubble', async (req, res) => {
+    console.log('Route /test-bubble atteinte !');
+    const bigArray = Array.from({ length: 10000 }, () => Math.floor(Math.random() * 10000));
+    await bubbleProf(bigArray);
+    res.send('Test BubbleProf terminé ! Check console.');
+});
 
 
 /* Gestion des routes non définies */
