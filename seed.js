@@ -21,14 +21,14 @@ async function seed() {
   try {
     /* Vider les collections */
     await Catway.deleteMany({});
-    console.log("Collections Catway vidées ✅");
+    console.log("Collections Catway vidées ");
 
     await Reservation.deleteMany({});
-    console.log("Collections Reservation vidées ✅");
+    console.log("Collections Reservation vidées ");
 
     /* Insérer les catways */
     const insertedCatways = await Catway.insertMany(catwaysData);
-    console.log("Catways importés ✅");
+    console.log("Catways importés ");
 
     /* Générer les réservations avec dates valides */
     const today = new Date();

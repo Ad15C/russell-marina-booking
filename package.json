@@ -33,6 +33,7 @@
     "mongoose": "^9.1.5"
   },
   "devDependencies": {
+    "chai": "^6.2.2",
     "clinic": "^13.0.0",
     "cross-env": "^10.1.0",
     "env-cmd": "^11.0.0",
