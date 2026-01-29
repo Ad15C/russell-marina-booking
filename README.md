@@ -75,7 +75,7 @@ Chaque réservation est validée pour :
 - jest
 - supertest
 - env-cmd
-- mocha
+
 
 ---
 
