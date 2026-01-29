@@ -8,8 +8,9 @@ async function validateReservation({ catwayId, clientName, boatName, checkIn, ch
     const catway = await Catway.findById(catwayId);
   if (!catway) throw new Error('Catway introuvable');
   /* Vérifie que le catway est disponible */
-  if (catway.status === 'occupied') throw new Error('Ce catway est actuellement occupé');
-  if (catway.status === 'maintenance') throw new Error('Ce catway est en maintenance et ne peut pas être réservé');
+  if (catway.catwayState === 'occupé') throw new Error('Ce catway est actuellement occupé');
+  if (catway.catwayState === 'maintenance') throw new Error('Ce catway est en maintenance...');
+
 /* Vérifie les champs obligatoires */
   if (!clientName || !boatName || !checkIn || !checkOut) {
     throw new Error('Tous les champs sont obligatoires');

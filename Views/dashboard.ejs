@@ -81,7 +81,7 @@
           <a href="/catways/<%= catway._id %>">Voir</a>
 
           <!-- Modifier -->
-          <form action="/catways/<%= catway._id %>" method="POST">
+          <form action="/catways/<%= catway._id %>" method="POST" style="display:inline;">
           <input type="hidden" name="_method" value="PUT">
             <select name="type">
               <option value="">--Type--</option>
@@ -177,16 +177,13 @@
   <h2>Gestion des réservations</h2>
 
     <h3>Créer une réservation</h3>
-      <form method="POST" action="/reservations-dashboard">
+      <form method="POST" action="/reservations">
         <label for="catwayId">Catway :</label>
         <select name="catwayId" id="catwayId" required>
           <option value="">--Choisir un catway--</option>
-          <% catways.forEach(catway => { %>
-            <option 
-              value="<%= catway._id %>" 
-              <% if(catway.catwayState !== 'libre'){ %> disabled <% } %>
-            >
-              Catway <%= catway.catwayNumber %> 
+          <% catways.forEach(catway => { %> 
+            <option value="<%= catway._id %>" <%= catway.catwayState !== 'libre' ? 'disabled' : '' %>>
+              Catway <%= catway.catwayNumber %>
               (<%= catway.catwayState === 'libre' ? 'Disponible' : catway.catwayState === 'occupé' ? 'Occupé' : 'Maintenance' %>)
             </option>
           <% }) %>
@@ -227,7 +224,7 @@
           if (!reservationId) return alert("Choisir une réservation");
 
           // Redirection POST vers la route serveur
-          fetch(`/reservations-dashboard/${reservationId}/delete`, {
+          fetch(`/reservations/${reservationId}/delete`, {
             method: 'POST'
           })
           .then(() => window.location.href = '/dashboard?message=Réservation supprimée !')
@@ -242,13 +239,14 @@
           <th>ID Réservation</th>
           <th>Client</th>
           <th>Catway</th>
-          <th>Action</th>
+          <th>Actions</th>
         </tr>
 
         <% reservations.forEach(r => { %>
           <tr>
             <td style="font-family: monospace;"><%= r._id %></td>
             <td><%= r.clientName %></td>
+            <td><%= r.boatName %></td>
             <td><%= r.catwayNumber || r.catwayId?.catwayNumber %></td>
             <td>
               <a href="/reservations/<%= r._id %>">Voir détail</a>
@@ -260,12 +258,7 @@
 
       <h3>Voir les détails d'une réservation</h3>
       <form id="viewReservationForm">
-        <input
-          type="text"
-          name="reservationId"
-          placeholder="ID de la réservation"
-          required
-        />
+        <input type="text" name="reservationId" placeholder="ID de la réservation" required />
         <button type="submit">Voir détail réservation</button>
       </form>
 
