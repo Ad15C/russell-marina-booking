@@ -1,0 +1,121 @@
+[{
+        "catwayNumber": 1,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 2,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 3,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 4,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 5,
+        "type": "long",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 6,
+        "type": "short",
+        "catwayState": "en maintenance"
+    },
+    {
+        "catwayNumber": 7,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 8,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 9,
+        "type": "long",
+        "catwayState": "en maintenance"
+    },
+    {
+        "catwayNumber": 10,
+        "type": "long",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 11,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 12,
+        "type": "short",
+        "catwayState": "en maintenance"
+    },
+    {
+        "catwayNumber": 13,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 14,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 15,
+        "type": "long",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 16,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 17,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 18,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 19,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 20,
+        "type": "long",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 21,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 22,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 23,
+        "type": "short",
+        "catwayState": "libre"
+    },
+    {
+        "catwayNumber": 24,
+        "type": "short",
+        "catwayState": "occupé"
+    }
+]
